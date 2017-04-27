@@ -66,6 +66,7 @@ module CarrierWave
     def get_file(file)
       return file.url if in_fog?(file)
       return get_file(file.file) if is_wrapped?(file)
+      return get_file(file.tempfile) if has_tempfile?(file)
       file
     end
 
@@ -76,6 +77,10 @@ module CarrierWave
 
     def is_wrapped?(file)
       FILE_WRAPPERS.any? { |wrapper| file.is_a?(wrapper) }
+    end
+
+    def has_tempfile?(file)
+      file.try(:tempfile).present?
     end
   end
 end
